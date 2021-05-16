@@ -70,7 +70,7 @@ function App() {
   const H = window.screen.height;
   const W = window.screen.width;
   const ru = navigator.userAgent;
-  const g = window.navigator.language;
+  const g = window.navigator.languages;
   const i = Date();    
   const session = can();
   const tex = text()
@@ -85,10 +85,8 @@ function App() {
     pass: pass
   }).then((response)=>{if (response.data.message){
     setloginStatus(response.data.message)
-    
   }else{
     setloginStatus(response.data[0].name)
-    
   }})
   }
   const submit=()=>{
@@ -111,7 +109,7 @@ function App() {
     alert("insert");
   })
   };
-
+  
   return (
     <div className="App">
       <h1>Login</h1>

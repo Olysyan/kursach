@@ -15,6 +15,36 @@ const db = mysql.createPool({
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({extended: true}))
+db1 = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'auth'
+})
+app.post('/login',(req,res)=>{
+    const name = req.body.email
+    const pass = req.body.pass
+    console.log(name,pass)
+    db1.query("SELECT * FROM users WHERE name=? AND pass=?;",[name,pass],(err,result)=>{
+        console.log(String(result[0]))
+        if(err){console.log(err)}
+        if(result[0]){
+            res.send(result)
+            console.log("!")
+        }else{res.send({message: "NO user found" })}
+    })
+
+})
+app.post('/auth',(req,res)=>{
+    const name = req.body.email
+    const pass = req.body.pass
+    const sql= "INSERT INTO users (name, pass) VALUES (?,?);"
+    db1.query(sql,[name,pass],(err,result)=>{
+        console.log(err)
+    })
+
+})
+
 app.post('/fingerprint',(req,res)=>{
     const email = req.body.email
     const pass = req.body.pass
@@ -33,42 +63,12 @@ app.post('/fingerprint',(req,res)=>{
         .update(pass)
         .digest('hex');
     }
-    const hash1=generateHash((H+String(g)+String(ru)))
-    console.log(ru)
-    const sql= "INSERT INTO users (email, pass, hash, i, ip,canvas,fonts) VALUES (?,?,?,?,?,?,?);"
-    db.query(sql,[email, pass, hash1, i, ip,String(session),String(tex)],(err,result)=>{
+    const hash1=generateHash((H+String(g)+String(ru)+String(session)+String(tex)+ip.split(':')[0]+ip.split(':')[1]+ip.split(':')[2]))
+    const sql= "INSERT INTO users (email, pass, hash, i) VALUES (?,?,?,?);"
+    db.query(sql,[email, pass, hash1, i],(err,result)=>{
         console.log(err)
     })
 })
-
-db1 = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'auth'
-})
-app.post('/login',(req,res)=>{
-    const name = req.body.email
-    const pass = req.body.pass
-    db1.query("SELECT * FROM users WHERE name=? AND pass=?;",[name,pass],(err,result)=>{
-        console.log(result[0])
-        if(err){console.log(err)}
-        if(result[0]){
-            res.send(result)
-        }else{res.send({message: "NO user found" })}
-    })
-
-})
-app.post('/auth',(req,res)=>{
-    const name = req.body.email
-    const pass = req.body.pass
-    const sql= "INSERT INTO users (name, pass) VALUES (?,?);"
-    db1.query(sql,[name,pass],(err,result)=>{
-        console.log(err)
-    })
-
-})
-
 
 app.listen(3001,()=>{
     console.log('3001run')
