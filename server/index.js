@@ -17,9 +17,9 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({extended: true}))
 db1 = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'auth'
+    user: '',
+    password: '',
+    database: ''
 })
 app.post('/login',(req,res)=>{
     const name = req.body.email
