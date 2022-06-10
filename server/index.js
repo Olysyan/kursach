@@ -7,9 +7,9 @@ const crypto = require('crypto');
 
 const db = mysql.createPool({
     host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: '14'
+    user: '',
+    password: '',
+    database: ''
 })
 
 app.use(cors())
